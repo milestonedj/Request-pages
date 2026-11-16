@@ -48,7 +48,10 @@
   .light .sheet { --bg: #ffffff; --ink: #111; --ink-2: #444; --ink-3: #6b6b6b; --line-print: #d9d9d6; }
   .controls { z-index: 10; position: fixed; top: 12px; right: 12px; font: 13px var(--font-sans); background: #fff; color: #222; padding: 10px 14px; border-radius: 10px; box-shadow: 0 4px 18px rgba(0,0,0,.15); }
   .controls a { color: #222; margin-left: 8px; }
-  @media print { html, body { background: none; padding: 0; } body { display: block; } .sheet { box-shadow: none; } .controls { display: none; } }
+  @media print {
+    html, body { background: none !important; padding: 0; } body { display: block; } .sheet { box-shadow: none; } .controls { display: none; }
+    html:not(.light) .sheet { --bg: #0a0a0a; --ink: #f7f4ee; --ink-2: #d4cfc4; --ink-3: #a7a295; --line: #2a2a27; --gold: #c9a96a; color: var(--ink); }
+  }
 </style>
 </head>
 <body>
