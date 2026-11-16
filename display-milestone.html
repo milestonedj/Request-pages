@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex" />
+<title>Milestone — Wedding DJ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+<style>
+  .brand-tag { font-family: var(--font-serif); font-style: italic; font-size: clamp(20px,3vw,28px); color: var(--ink-2); margin-top: 14px; }
+  .contact-bar {
+    display:flex; gap: clamp(14px, 3vw, 36px); flex-wrap:wrap; justify-content:center;
+    margin-top: clamp(24px, 5vh, 44px);
+    font-size: 14px; color: var(--ink-2);
+  }
+  .contact-bar a { color: var(--ink); text-decoration: none; }
+  .contact-bar .k { color: var(--gold); font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; display:block; margin-bottom:2px; }
+  .services-line { margin-top: 20px; font-size: 12.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3); }
+  .services-line .dot { color: var(--gold); padding: 0 8px; }
+  .foot-owner { margin-top: clamp(22px, 4vh, 40px); font-size: 13px; color: var(--ink-3); }
+  .tip-line { font-size: 17px; max-width: 280px; }
+</style>
+</head>
+<body class="display-body">
+  <div class="wordmark" style="font-size:clamp(26px,4.5vw,40px)" id="bizName"></div>
+  <div class="brand-tag" id="tagline"></div>
+
+  <div class="display-grid">
+    <div class="qr-block">
+      <div class="qr-card"><div id="qrRequest"></div></div>
+      <div class="qr-label">Request a song</div>
+      <div class="steps"><span>Scan</span><span class="dot">·</span><span>Search</span><span class="dot">·</span><span>Dance</span></div>
+    </div>
+
+    <div class="qr-block">
+      <div class="qr-card"><div id="qrVenmo"></div></div>
+      <div class="qr-label">Tip the DJ</div>
+      <p class="serif-italic muted tip-line" id="tipLine"></p>
+    </div>
+  </div>
+
+  <div class="contact-bar" id="contactBar"></div>
+  <div class="services-line" id="servicesLine"></div>
+  <div class="services-line" style="margin-top:10px" id="areaLine"></div>
+  <div class="foot-owner" id="ownerLine"></div>
+
+<script src="vendor-qrcode.js"></script>
+<script type="module">
+  import { SETTINGS, BUSINESS } from "./config.js";
+  import { drawQR } from "./qr-helper.js";
+  const $ = (id) => document.getElementById(id);
+
+  $("bizName").textContent = BUSINESS.name;
+  $("tagline").textContent = BUSINESS.tagline;
+  $("tipLine").textContent = SETTINGS.tipLine;
+  $("contactBar").innerHTML = `
+    <div><span class="k">Call / Text</span><a href="${BUSINESS.phoneHref}">${BUSINESS.phone}</a></div>
+    <div><span class="k">Email</span><a href="mailto:${BUSINESS.email}">${BUSINESS.email}</a></div>
+    <div><span class="k">Instagram</span><a href="${BUSINESS.instagramUrl}" target="_blank" rel="noopener">${BUSINESS.instagram}</a></div>
+    <div><span class="k">Web</span><a href="${BUSINESS.websiteUrl}" target="_blank" rel="noopener">${BUSINESS.website}</a></div>`;
+  $("servicesLine").innerHTML = BUSINESS.services.join('<span class="dot">·</span>');
+  $("areaLine").textContent = BUSINESS.serviceArea;
+  $("ownerLine").textContent = BUSINESS.owner + " — " + BUSINESS.title;
+
+  const requestUrl = new URL("request.html?v=private", location.href).href;
+  drawQR($("qrRequest"), requestUrl, 260);
+  drawQR($("qrVenmo"), "https://venmo.com/u/" + SETTINGS.venmoHandle, 260);
+</script>
+</body>
+</html>

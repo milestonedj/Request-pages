@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex" />
+<title>Print</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+<style id="pageSize"></style>
+<style>
+  /* Vertical print sign. Sizes: ?size=letter (default) | 8x10 | 5x7 | 4x6
+     Content: ?show=both (default) | requests | tips      Paper: ?light=1 for a white page
+     QR tag: ?v=table (whatever you want the dashboard to show as the source) */
+  html, body { background: #e9e9e6; }
+  body { display: flex; justify-content: center; padding: 24px 0; }
+  .sheet {
+    width: var(--w); height: var(--h); background: var(--bg); color: var(--ink);
+    display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+    text-align: center; padding: calc(var(--u) * 0.62) calc(var(--u) * 0.5);
+    box-shadow: 0 10px 40px rgba(0,0,0,.25); position: relative; overflow: hidden;
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
+  }
+  .sheet::before { content: ""; position: absolute; inset: calc(var(--u) * 0.2); border: 1px solid var(--line-print); pointer-events: none; }
+  .top { display: flex; flex-direction: column; align-items: center; }
+  .eb { font-size: calc(var(--u) * 0.13); letter-spacing: .34em; text-transform: uppercase; color: var(--acc); font-weight: 500; }
+  .brandmark { font-weight: 600; letter-spacing: .42em; text-transform: uppercase; font-size: calc(var(--u) * 0.24); margin-bottom: calc(var(--u) * 0.16); }
+  .tag { font-family: var(--font-serif); font-style: italic; color: var(--ink-2); font-size: calc(var(--u) * 0.2); margin-top: calc(var(--u) * -0.06); margin-bottom: calc(var(--u) * 0.2); }
+  h1 { font-family: var(--font-serif); font-weight: 500; line-height: 1.02; font-size: calc(var(--u) * 0.78); margin-top: calc(var(--u) * 0.14); }
+  .steps { margin-top: calc(var(--u) * 0.16); font-size: calc(var(--u) * 0.13); letter-spacing: .3em; text-transform: uppercase; color: var(--ink-2); }
+  .steps i { font-style: normal; color: var(--acc); padding: 0 .6em; }
+  .qr { background: #fff; padding: calc(var(--u) * 0.16); border-radius: calc(var(--u) * 0.12); line-height: 0; }
+  .qr svg { width: var(--qr); height: var(--qr); display: block; }
+  .qr.small svg { width: var(--qr2); height: var(--qr2); }
+  .scan { margin-top: calc(var(--u) * 0.14); font-size: calc(var(--u) * 0.12); letter-spacing: .26em; text-transform: uppercase; color: var(--ink-3); }
+  .rule { width: calc(var(--u) * 1.2); height: 1px; background: var(--acc); opacity: .7; }
+  .tip { display: flex; align-items: center; gap: calc(var(--u) * 0.3); text-align: left; }
+  .tip .t1 { font-family: var(--font-serif); font-size: calc(var(--u) * 0.32); line-height: 1.05; }
+  .tip .t2 { font-family: var(--font-serif); font-style: italic; color: var(--ink-2); font-size: calc(var(--u) * 0.15); margin-top: calc(var(--u) * 0.08); max-width: calc(var(--u) * 2.6); }
+  .tip .t3 { font-size: calc(var(--u) * 0.11); letter-spacing: .2em; text-transform: uppercase; color: var(--acc); margin-top: calc(var(--u) * 0.1); }
+  .foot { font-size: calc(var(--u) * 0.11); letter-spacing: .32em; text-transform: uppercase; color: var(--ink-3); }
+  .tips-only .tip { flex-direction: column; text-align: center; }
+  .tips-only .tip .t1 { font-size: calc(var(--u) * 0.7); }
+  .tips-only .tip .t2 { font-size: calc(var(--u) * 0.22); max-width: none; }
+  .tips-only .qr.small svg { width: var(--qr); height: var(--qr); }
+  .light .sheet { --bg: #ffffff; --ink: #111; --ink-2: #444; --ink-3: #6b6b6b; --line-print: #d9d9d6; }
+  .controls { z-index: 10; position: fixed; top: 12px; right: 12px; font: 13px var(--font-sans); background: #fff; color: #222; padding: 10px 14px; border-radius: 10px; box-shadow: 0 4px 18px rgba(0,0,0,.15); }
+  .controls a { color: #222; margin-left: 8px; }
+  @media print { html, body { background: none; padding: 0; } body { display: block; } .sheet { box-shadow: none; } .controls { display: none; } }
+</style>
+</head>
+<body>
+<div class="controls" id="controls"></div>
+<div class="sheet" id="sheet">
+  <div class="top" id="top"></div>
+  <div id="mid"></div>
+  <div class="foot" id="foot"></div>
+</div>
+<script src="vendor-qrcode.js"></script>
+<script type="module">
+  import { SETTINGS, BUSINESS } from "./config.js?v=6";
+  const q = new URLSearchParams(location.search);
+  const SIZES = { letter: [8.5, 11], "8x10": [8, 10], "5x7": [5, 7], "4x6": [4, 6] };
+  const size = SIZES[q.get("size")] ? q.get("size") : "letter";
+  const [W, H] = SIZES[size];
+  const show = ["requests", "tips"].includes(q.get("show")) ? q.get("show") : "both";
+  const tag = (q.get("v") || "sign").replace(/[^\w-]/g, "").slice(0, 30);
+  const base = q.get("base") || location.href;   // ?base= lets you print before the site is live
+  const brand = { name: BUSINESS.name, tagline: BUSINESS.tagline, foot: BUSINESS.website + "  ·  " + BUSINESS.instagram };
+  if (q.get("light") === "1") document.documentElement.classList.add("light");
+  if (show === "tips") document.body.classList.add("tips-only");
+
+  const k = Math.min(W / 8.5, H / 11);   // everything scales with the tighter side of the page
+  const s = document.documentElement.style;
+  s.setProperty("--w", W + "in"); s.setProperty("--h", H + "in"); s.setProperty("--u", k + "in");
+  const qrIn = show === "both" ? (brand.name ? 3.25 : 3.7) : (brand.name ? 4.0 : 4.4);
+  s.setProperty("--qr", qrIn * k + "in");
+  s.setProperty("--qr2", 1.35 * k + "in");
+  s.setProperty("--acc", "var(--gold)");
+  s.setProperty("--line-print", "var(--line)");
+  document.getElementById("pageSize").textContent = `@page { size: ${W}in ${H}in; margin: 0; }`;
+
+  const qrSvg = (text) => { const qr = qrcode(0, "M"); qr.addData(text); qr.make(); return qr.createSvgTag({ cellSize: 4, margin: 0, scalable: true }); };
+  const requestUrl = new URL("request.html?v=" + tag, base).href;
+  const venmoUrl = "https://venmo.com/u/" + SETTINGS.venmoHandle;
+  const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+  const head = brand.name ? `<div class="brandmark">${esc(brand.name)}</div>${brand.tagline ? `<div class="tag">${esc(brand.tagline)}</div>` : ""}` : "";
+  const tipBlock = `<div class="tip"><div class="qr small">${qrSvg(venmoUrl)}</div><div>
+      <div class="t1">${show === "tips" ? "Enjoying<br>the music?" : "Tip the DJ"}</div>
+      <div class="t2">${esc(SETTINGS.tipLine)}</div>
+      <div class="t3">Venmo · @${esc(SETTINGS.venmoHandle)}</div></div></div>`;
+
+  if (show === "tips") {
+    document.getElementById("top").innerHTML = head + `<div class="eb">From the DJ booth</div>`;
+    document.getElementById("mid").innerHTML = tipBlock;
+  } else {
+    document.getElementById("top").innerHTML = head + `<div class="eb">Tonight's music</div><h1>Request<br>a Song</h1>
+      <div class="steps">Scan<i>·</i>Search<i>·</i>Send</div>`;
+    document.getElementById("mid").innerHTML = `<div class="qr">${qrSvg(requestUrl)}</div><div class="scan">Point your camera here</div>`;
+    if (show === "both") document.getElementById("mid").insertAdjacentHTML("afterend", `<div class="rule"></div>${tipBlock}`);
+  }
+  document.getElementById("foot").textContent = brand.foot;
+
+  const link = (k, v) => { const p = new URLSearchParams(q); p.set(k, v); return "?" + p.toString(); };
+  document.getElementById("controls").innerHTML =
+    `Size: ${Object.keys(SIZES).map((k) => `<a href="${link("size", k)}">${k === size ? "<b>" + k + "</b>" : k}</a>`).join("")}
+     <br>Show: ${["both", "requests", "tips"].map((k) => `<a href="${link("show", k)}">${k === show ? "<b>" + k + "</b>" : k}</a>`).join("")}
+     <br>Paper: <a href="${link("light", q.get("light") === "1" ? "0" : "1")}">${q.get("light") === "1" ? "dark" : "white (saves ink)"}</a>
+     <br><a href="#" onclick="print();return false"><b>Print</b></a>`;
+</script>
+</body>
+</html>

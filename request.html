@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex" />
+<title>Song Requests</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+<style>
+  .page { max-width: 560px; }
+  header.req-head { text-align: center; padding: 26px 0 8px; }
+  header.req-head h1 { margin-top: 10px; }
+  #results { margin-top: 10px; display: flex; flex-direction: column; gap: 4px; }
+  .hint { font-size: 13px; color: var(--ink-3); text-align: center; margin-top: 14px; }
+  .hint button {
+    background: none; border: none; color: var(--gold);
+    font: inherit; cursor: pointer; text-decoration: underline;
+  }
+  #selectedCard { margin-top: 18px; }
+  .selected-head { display: flex; align-items: center; gap: 14px; }
+  .swap { margin-left: auto; background: none; border: none; color: var(--ink-3); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; }
+  #successView { text-align: center; padding-top: 8vh; }
+  .check {
+    width: 64px; height: 64px; border-radius: 50%;
+    border: 1px solid var(--gold); color: var(--gold);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 28px; margin-bottom: 22px;
+  }
+  .tip-card { margin-top: 34px; padding: 24px; }
+  .tip-card .serif-italic { font-size: 20px; color: var(--ink-2); }
+  .spin { display:inline-block; width:16px; height:16px; border:2px solid var(--ink-3); border-top-color: var(--gold); border-radius:50%; animation: sp 0.8s linear infinite; vertical-align:-3px; }
+  @keyframes sp { to { transform: rotate(360deg); } }
+  footer.brand-foot { text-align:center; margin-top:56px; }
+</style>
+</head>
+<body>
+<div class="page">
+  <div id="demoBanner" class="banner" style="display:none">
+    Demo mode — requests save on this device only. Finish the Firebase setup in the README to go live.
+  </div>
+
+  <header class="req-head">
+    <div class="eyebrow">Song Requests</div>
+    <h1 class="display">What do you<br />want to hear?</h1>
+    <p class="muted" style="margin-top:12px">Search it. Send it. I'll work it in if I can.</p>
+  </header>
+
+  <!-- SEARCH VIEW -->
+  <section id="searchView">
+    <div style="margin-top:22px">
+      <input id="q" class="input" type="search" autocomplete="off"
+             placeholder="Song title or artist…" aria-label="Search for a song" />
+    </div>
+    <div id="results" role="listbox" aria-label="Song suggestions"></div>
+    <p class="hint" id="manualHint" style="display:none">
+      Can't find it? <button id="manualBtn" type="button">Type it in manually</button>
+    </p>
+  </section>
+
+  <!-- SELECTED / SUBMIT VIEW -->
+  <section id="submitView" style="display:none">
+    <div id="selectedCard" class="card">
+      <div class="selected-head">
+        <img id="selArt" class="song-art" alt="" />
+        <div class="song-meta">
+          <div id="selTitle" class="song-title"></div>
+          <div id="selArtist" class="song-artist"></div>
+        </div>
+        <button class="swap" id="swapBtn" type="button">Change</button>
+      </div>
+
+      <label class="field-label" for="reqName">Your name <span style="opacity:.6">(optional)</span></label>
+      <input id="reqName" class="input" maxlength="60" placeholder="So I can give you a shout-out" />
+
+      <label class="field-label" for="reqNote">Note <span style="opacity:.6">(optional)</span></label>
+      <input id="reqNote" class="input" maxlength="140" placeholder="Dedication, 'play during dinner', etc." />
+
+      <div style="margin-top:22px">
+        <button id="sendBtn" class="btn" type="button">Send Request</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- MANUAL ENTRY VIEW -->
+  <section id="manualView" style="display:none">
+    <div class="card">
+      <label class="field-label" for="mSong">Song title</label>
+      <input id="mSong" class="input" maxlength="120" placeholder="Song title" />
+      <label class="field-label" for="mArtist">Artist</label>
+      <input id="mArtist" class="input" maxlength="120" placeholder="Artist" />
+      <div style="margin-top:22px">
+        <button id="manualUse" class="btn ghost" type="button">Use This Song</button>
+      </div>
+    </div>
+    <p class="hint"><button id="backToSearch" type="button">← Back to search</button></p>
+  </section>
+
+  <!-- SUCCESS VIEW -->
+  <section id="successView" style="display:none">
+    <div class="check">✓</div>
+    <h2 class="display" style="font-size:clamp(30px,6vw,44px)">It's in the queue.</h2>
+    <p class="muted" style="margin-top:12px">Nice pick. I'll work it in if I can.</p>
+
+    <div class="card tip-card">
+      <div class="eyebrow" style="margin-bottom:12px">Enjoying the music?</div>
+      <p class="serif-italic" id="tipLine"></p>
+      <div style="margin-top:20px">
+        <a id="venmoLink" class="btn gold-outline" href="#" target="_blank" rel="noopener">Tip on Venmo</a>
+      </div>
+    </div>
+
+    <div style="margin-top:26px">
+      <button id="againBtn" class="btn ghost" type="button">Request Another Song</button>
+    </div>
+  </section>
+
+  <footer class="brand-foot">
+    <div id="brandFoot" class="subtle" style="font-size:12px; letter-spacing:0.3em; text-transform:uppercase;"></div>
+  </footer>
+</div>
+
+<script type="module">
+  import { initStore, storeMode, addRequest, searchSongs, rateLimitOk, esc } from "./app.js?v=5";
+  import { SETTINGS, BUSINESS } from "./config.js?v=6";
+
+  const $ = (id) => document.getElementById(id);
+  const params = new URLSearchParams(location.search);
+  const venue = (params.get("v") || "event").slice(0, 40);
+
+  $("brandFoot").textContent = BUSINESS.name + " — " + BUSINESS.website;
+  $("tipLine").textContent = SETTINGS.tipLine;
+  $("venmoLink").href = "https://venmo.com/u/" + SETTINGS.venmoHandle;
+
+  const mode = await initStore();
+  if (mode !== "firebase") $("demoBanner").style.display = "block";
+
+  let selected = null;
+  const views = ["searchView", "submitView", "manualView", "successView"];
+  const show = (name) => views.forEach((v) => $(v).style.display = v === name ? "" : "none");
+
+  // ---------- search ----------
+  let timer = null, seq = 0;
+  $("q").addEventListener("input", () => {
+    clearTimeout(timer);
+    const term = $("q").value.trim();
+    if (term.length < 2) { $("results").innerHTML = ""; $("manualHint").style.display = "none"; return; }
+    $("results").innerHTML = '<p class="hint"><span class="spin"></span>&nbsp; searching…</p>';
+    timer = setTimeout(async () => {
+      const mySeq = ++seq;
+      let items = [];
+      try { items = await searchSongs(term); } catch { items = null; }
+      if (mySeq !== seq) return; // stale response
+      renderResults(items, term);
+    }, 350);
+  });
+
+  function renderResults(items, term) {
+    $("manualHint").style.display = "";
+    if (items === null) {
+      $("results").innerHTML = '<p class="hint">Search is unavailable right now — you can still type your song in manually below.</p>';
+      return;
+    }
+    if (!items.length) {
+      $("results").innerHTML = '<p class="hint">No matches for “' + esc(term) + '”.</p>';
+      return;
+    }
+    $("results").innerHTML = items.map((t, i) => `
+      <div class="song-row" role="option" tabindex="0" data-i="${i}">
+        <img class="song-art" loading="lazy" alt="" src="${esc(t.artworkUrl100 || "")}" />
+        <div class="song-meta">
+          <div class="song-title">${esc(t.trackName)}</div>
+          <div class="song-artist">${esc(t.artistName)}</div>
+        </div>
+      </div>`).join("");
+    const pick = (i) => selectSong({
+      song: items[i].trackName, artist: items[i].artistName,
+      art: (items[i].artworkUrl100 || "").replace("100x100", "200x200"),
+    });
+    document.querySelectorAll(".song-row").forEach((row) => {
+      row.addEventListener("click", () => pick(+row.dataset.i));
+      row.addEventListener("keydown", (e) => { if (e.key === "Enter") pick(+row.dataset.i); });
+    });
+  }
+
+  function selectSong(s) {
+    selected = s;
+    $("selArt").src = s.art || "";
+    $("selArt").style.display = s.art ? "" : "none";
+    $("selTitle").textContent = s.song;
+    $("selArtist").textContent = s.artist;
+    show("submitView");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  // ---------- manual entry ----------
+  $("manualBtn").addEventListener("click", () => show("manualView"));
+  $("backToSearch").addEventListener("click", () => show("searchView"));
+  $("manualUse").addEventListener("click", () => {
+    const song = $("mSong").value.trim(), artist = $("mArtist").value.trim();
+    if (!song) { $("mSong").focus(); return; }
+    selectSong({ song, artist: artist || "Unknown artist", art: "" });
+  });
+
+  // ---------- swap / submit ----------
+  $("swapBtn").addEventListener("click", () => show("searchView"));
+  $("sendBtn").addEventListener("click", async () => {
+    if (!selected) return;
+    if (!rateLimitOk()) {
+      alertSoft("Easy there — a few requests are already in. Give it a few minutes and try again.");
+      return;
+    }
+    $("sendBtn").disabled = true;
+    $("sendBtn").textContent = "Sending…";
+    try {
+      await addRequest({
+        song: selected.song.slice(0, 200),
+        artist: selected.artist.slice(0, 200),
+        art: (selected.art || "").slice(0, 400),
+        requester: $("reqName").value.trim().slice(0, 60),
+        note: $("reqNote").value.trim().slice(0, 140),
+        venue,
+      });
+      show("successView");
+      window.scrollTo({ top: 0 });
+    } catch (e) {
+      console.error(e);
+      alertSoft("Hmm, that didn't go through. Check your connection and try again.");
+    } finally {
+      $("sendBtn").disabled = false;
+      $("sendBtn").textContent = "Send Request";
+    }
+  });
+
+  function alertSoft(msg) {
+    let el = document.getElementById("softAlert");
+    if (!el) {
+      el = document.createElement("div");
+      el.id = "softAlert";
+      el.className = "banner";
+      $("submitView").prepend(el);
+    }
+    el.textContent = msg;
+    el.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+
+  $("againBtn").addEventListener("click", () => {
+    selected = null;
+    $("q").value = ""; $("results").innerHTML = "";
+    $("reqName").value = ""; $("reqNote").value = "";
+    $("manualHint").style.display = "none";
+    show("searchView");
+    window.scrollTo({ top: 0 });
+  });
+</script>
+</body>
+</html>

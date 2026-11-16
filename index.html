@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex" />
+<title>Milestone — Event Pages</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+<style>
+  .page { max-width: 620px; }
+  .hub-card { display:block; text-decoration:none; color:var(--ink); margin-bottom:14px; transition: border-color .15s; }
+  .hub-card:hover { border-color: var(--gold); }
+  .hub-card h2 { font-family: var(--font-serif); font-weight:500; font-size:24px; }
+  .hub-card p { color: var(--ink-2); font-size: 14px; margin-top:4px; }
+  .hub-card .tag { font-size:11px; letter-spacing:0.2em; text-transform:uppercase; color:var(--gold); }
+  .sec { margin: 30px 0 12px; }
+</style>
+</head>
+<body>
+<div class="page">
+  <header style="text-align:center; padding:34px 0 10px">
+    <div class="wordmark" style="font-size:22px">Milestone</div>
+    <p class="subtle" style="font-size:13px; margin-top:8px">Event pages — for your eyes, not guests'. Bookmark the dashboard.</p>
+  </header>
+
+  <div id="setupBanner" class="banner" style="display:none">
+    Firebase isn't connected yet — pages run in same-device demo mode. See README.md for the 10-minute setup.
+  </div>
+
+  <div class="eyebrow sec">Your view</div>
+  <a class="card hub-card" href="dashboard.html">
+    <span class="tag">DJ only</span>
+    <h2>Request Dashboard</h2>
+    <p>Live requests tonight, full history by date, insights &amp; CSV export.</p>
+  </a>
+
+  <div class="eyebrow sec">Display pages — put on a screen or print</div>
+  <a class="card hub-card" href="print.html">
+    <span class="tag">Print · vertical</span>
+    <h2>Printable Sign</h2>
+    <p>Letter, 8x10, 5x7 or 4x6. Request QR + tip QR, requests only, or tips only.</p>
+  </a>
+  <a class="card hub-card" href="display-milestone.html">
+    <span class="tag">Private events · full branding</span>
+    <h2>Milestone Business Card</h2>
+    <p>Brand, tagline, contact, services, request QR and tip QR.</p>
+  </a>
+
+  <div class="eyebrow sec">Guest page (linked from QRs)</div>
+  <a class="card hub-card" href="request.html">
+    <span class="tag">Guests</span>
+    <h2>Song Request Form</h2>
+    <p>Search, pick, send. Each QR tags its requests so you can see which sign they came from.</p>
+  </a>
+
+  <div class="eyebrow sec">Couples — booked clients</div>
+  <a class="card hub-card" href="intake.html">
+    <span class="tag">Send this link to couples</span>
+    <h2>Pre-Consult Intake Form</h2>
+    <p>Couples fill in songs, timeline &amp; details. Each gets a private link to edit anytime; you see it all in the Couples tab of your dashboard.</p>
+  </a>
+</div>
+<script type="module">
+  import { isFirebaseConfigured } from "./config.js";
+  if (!isFirebaseConfigured())
+    document.getElementById("setupBanner").style.display = "block";
+</script>
+</body>
+</html>

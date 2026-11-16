@@ -1,0 +1,299 @@
+/* ============================================================
+   MILESTONE EVENT PAGES — shared theme
+   Black / off-white luxury minimal with champagne accent,
+   matched to milestoneweddingdj.com
+   ============================================================ */
+
+:root {
+  --bg: #0a0a0a;
+  --surface: #141413;
+  --surface-2: #1c1c1a;
+  --ink: #f7f4ee;
+  --ink-2: #d4cfc4;
+  --ink-3: #a7a295;
+  --gold: #c9a96a;        /* decorative accent (rules, eyebrows) */
+  --gold-strong: #b58530; /* data marks — validated vs dark surface */
+  --line: #2a2a27;
+  --radius: 16px;
+  --font-sans: "Montserrat", -apple-system, "Segoe UI", sans-serif;
+  --font-serif: "Cormorant Garamond", Georgia, serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body { min-height: 100%; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.55;
+}
+
+/* ---------- type ---------- */
+.eyebrow {
+  font-size: 12px;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--gold);
+  font-weight: 500;
+}
+
+h1.display {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: clamp(38px, 7vw, 72px);
+  line-height: 1.08;
+  letter-spacing: 0.01em;
+}
+
+.serif-italic {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 500;
+}
+
+.muted { color: var(--ink-2); }
+.subtle { color: var(--ink-3); }
+
+.wordmark {
+  font-weight: 600;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+}
+
+/* ---------- layout helpers ---------- */
+.page {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 28px 20px 64px;
+}
+
+.rule {
+  border: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold) 30%, var(--gold) 70%, transparent);
+  opacity: 0.45;
+  margin: 28px auto;
+  width: 180px;
+}
+
+/* ---------- cards / buttons / inputs ---------- */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 20px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 16px 24px;
+  border-radius: 999px;
+  border: 1px solid var(--ink);
+  background: var(--ink);
+  color: #0a0a0a;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: opacity 0.15s ease, transform 0.05s ease;
+}
+.btn:active { transform: scale(0.985); }
+.btn:disabled { opacity: 0.35; cursor: default; }
+.btn.ghost {
+  background: transparent;
+  color: var(--ink);
+  border-color: var(--line);
+}
+.btn.gold-outline {
+  background: transparent;
+  color: var(--gold);
+  border-color: var(--gold);
+}
+
+.input {
+  width: 100%;
+  padding: 16px 18px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 16px; /* prevents iOS zoom */
+  outline: none;
+}
+.input::placeholder { color: var(--ink-3); }
+.input:focus { border-color: var(--gold); }
+
+label.field-label {
+  display: block;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  margin: 16px 0 7px;
+}
+
+/* ---------- song rows ---------- */
+.song-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+.song-row:hover, .song-row:focus-visible { background: var(--surface-2); border-color: var(--line); }
+.song-art {
+  width: 52px;
+  height: 52px;
+  border-radius: 8px;
+  background: var(--surface-2);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+.song-meta { min-width: 0; }
+.song-title {
+  font-weight: 600;
+  font-size: 15px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.song-artist {
+  font-size: 13px;
+  color: var(--ink-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---------- QR card ---------- */
+.qr-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 18px;
+  display: inline-block;
+  line-height: 0;
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.08), 0 24px 60px rgba(0,0,0,0.55);
+  max-width: 100%;
+}
+.qr-card img, .qr-card canvas { border-radius: 4px; }
+/* QR svg scales down to fit narrow/portrait screens instead of overflowing;
+   --qr-size (set inline per QR) is the cap on wider screens. */
+.qr-card svg {
+  display: block;
+  width: min(var(--qr-size, 260px), 62vw);
+  height: min(var(--qr-size, 260px), 62vw);
+}
+
+/* ---------- banners ---------- */
+.banner {
+  border: 1px solid var(--gold);
+  background: rgba(201, 169, 106, 0.08);
+  color: var(--gold);
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-size: 13px;
+  margin-bottom: 20px;
+}
+
+/* ---------- display pages ---------- */
+.display-body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 5vh 6vw;
+}
+/* Portrait / narrow screens (phones, portrait tablets, printed portrait pages)
+   stack the QR blocks in one column by default — this is the common case for
+   an event display stand. Wide landscape screens (min-width query below) go
+   side-by-side instead. */
+.display-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(32px, 6vh, 64px);
+  align-items: center;
+  justify-items: center;
+  width: 100%;
+  max-width: 480px;
+  margin-top: clamp(24px, 5vh, 48px);
+}
+@media (min-width: 860px) and (orientation: landscape) {
+  .display-grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    max-width: 1100px;
+    align-items: start;
+    gap: clamp(24px, 5vw, 72px);
+  }
+}
+.qr-block { display: flex; flex-direction: column; align-items: center; gap: 18px; width: 100%; }
+.qr-label {
+  font-size: 13px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  font-weight: 500;
+}
+.steps {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink-2);
+  font-size: 13px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  flex-wrap: wrap;
+}
+.steps .dot { color: var(--gold); }
+
+/* ---------- print: flip to ink-friendly light ---------- */
+@media print {
+  :root {
+    --bg: #ffffff;
+    --surface: #ffffff;
+    --surface-2: #f4f2ee;
+    --ink: #111111;
+    --ink-2: #444444;
+    --ink-3: #777777;
+    --line: #dddddd;
+    --gold: #8a6a2f;
+  }
+  body { background: #ffffff !important; color: #111 !important; }
+  .qr-card { box-shadow: none; border: 1px solid #ddd; padding: 10px; }
+  .no-print { display: none !important; }
+
+  /* Compact everything so a display page fits one Letter/A4 sheet —
+     the screen sizing (min-height:100vh, big gaps, large QR caps) is
+     generous on purpose for a monitor, but overflows a printed page. */
+  @page { margin: 0.35in; }
+  .display-body { min-height: auto; padding: 0; }
+  h1.display { font-size: clamp(24px, 4.5vw, 34px) !important; }
+  .eyebrow { font-size: 10px; }
+  .display-grid { gap: 20px !important; margin-top: 14px !important; max-width: 420px; }
+  .qr-card svg { width: min(var(--qr-size, 260px), 34vw) !important; height: min(var(--qr-size, 260px), 34vw) !important; }
+  .qr-label { font-size: 11px; }
+  .steps { font-size: 11px; }
+  .rule { margin: 14px auto; }
+  .tip-line, .serif-italic { font-size: 14px !important; }
+  .foot, .foot-owner { margin-top: 14px !important; }
+  .contact-bar { margin-top: 14px !important; gap: 14px !important; font-size: 12px; }
+  .services-line { margin-top: 8px !important; font-size: 10.5px; }
+  .brand-tag { margin-top: 6px !important; font-size: 16px !important; }
+  .wordmark { font-size: 22px !important; }
+}

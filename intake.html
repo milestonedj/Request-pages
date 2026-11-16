@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex" />
+<title>Pre-Consult — Milestone</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+<style>
+  .page { max-width: 660px; }
+  .intake-head { text-align: center; padding: 30px 0 6px; }
+  .intake-head h1 { margin-top: 10px; }
+  .section { margin-top: 36px; }
+  .section > h2 { font-family: var(--font-serif); font-weight: 600; font-size: 25px; padding-bottom: 8px; border-bottom: 1px solid var(--line); margin-bottom: 6px; }
+  .sec-note { color: var(--ink-2); font-size: 13.5px; margin: 2px 0 20px; line-height: 1.55; }
+  .fields { display: block; }
+
+  /* collapsible sections */
+  #formSections { margin-top: 20px; }
+  .accordion { border-bottom: 1px solid var(--line); }
+  .accordion:first-child { border-top: 1px solid var(--line); }
+  .acc-head { width: 100%; display: flex; align-items: center; gap: 14px; background: none; border: none; cursor: pointer; padding: 20px 4px; text-align: left; color: var(--ink); }
+  .acc-num { font: 600 12px var(--font-sans); letter-spacing: .12em; color: var(--gold); }
+  .acc-title { font-family: var(--font-serif); font-weight: 600; font-size: 23px; flex: 1; line-height: 1.1; }
+  .acc-caret { color: var(--ink-3); transition: transform .2s ease; font-size: 13px; }
+  .accordion.open .acc-caret { transform: rotate(180deg); }
+  .acc-body { display: none; padding: 0 4px 28px; }
+  .accordion.open .acc-body { display: block; }
+  .field { margin-bottom: 18px; }
+  textarea.input { resize: none; overflow: hidden; font-family: var(--font-sans); line-height: 1.5; }
+  textarea.input.autogrow { min-height: 0; }
+  .req-star { color: var(--gold); }
+  select.input { appearance: none; background-image: linear-gradient(45deg, transparent 50%, var(--ink-3) 50%), linear-gradient(135deg, var(--ink-3) 50%, transparent 50%); background-position: calc(100% - 18px) 20px, calc(100% - 13px) 20px; background-size: 5px 5px, 5px 5px; background-repeat: no-repeat; }
+
+  /* pickers */
+  .picker { position: relative; }
+  .pk-results { display: flex; flex-direction: column; gap: 2px; margin-top: 6px; }
+  .pk-row, .pk-picked { display: flex; align-items: center; gap: 12px; padding: 8px; border-radius: 10px; border: 1px solid transparent; }
+  .pk-row { cursor: pointer; }
+  .pk-row:hover, .pk-row:focus-visible { background: var(--surface-2); border-color: var(--line); }
+  .pk-picked { background: var(--surface-2); border-color: var(--line); }
+  .pk-art { width: 42px; height: 42px; border-radius: 7px; background: var(--surface-2); object-fit: cover; flex-shrink: 0; }
+  .pk-art.sm { width: 30px; height: 30px; border-radius: 5px; }
+  .pk-meta { min-width: 0; flex: 1; }
+  .pk-title { font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .pk-artist { font-size: 12.5px; color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .pk-dim { color: var(--ink-3); }
+  .pk-change { background: none; border: none; color: var(--ink-3); font: 500 11px var(--font-sans); letter-spacing: .12em; text-transform: uppercase; cursor: pointer; flex-shrink: 0; }
+  .pk-hint { font-size: 13px; color: var(--ink-3); padding: 8px 2px; }
+  .link { background: none; border: none; color: var(--gold); font: inherit; cursor: pointer; text-decoration: underline; padding: 4px 0; display: inline-block; }
+
+  /* dance controls */
+  .dance-controls { margin-top: 10px; padding: 12px 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
+  .dance-row { display: flex; align-items: center; gap: 10px; }
+  .mini-label { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--ink-3); flex-shrink: 0; }
+  .mini-select { padding: 8px 30px 8px 12px; font-size: 13px; }
+  .practice-toggle { display: flex; align-items: flex-start; gap: 9px; margin-top: 12px; font-size: 13px; color: var(--ink-2); cursor: pointer; line-height: 1.4; }
+  .practice-toggle input { margin-top: 2px; accent-color: var(--gold); flex-shrink: 0; }
+  .practice-toggle strong { color: var(--gold); }
+  .dance-who { margin-bottom: 8px; }
+
+  /* list picker */
+  .pk-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
+  .pk-chip { display: flex; align-items: center; gap: 10px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px; padding: 7px 10px; }
+  .pk-chip-text { flex: 1; font-size: 13.5px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .pk-remove { background: none; border: none; color: var(--ink-3); font-size: 20px; line-height: 1; cursor: pointer; flex-shrink: 0; }
+  .pk-remove:hover { color: var(--ink); }
+
+  /* name list */
+  .nl-row { display: grid; grid-template-columns: 1fr 1fr auto; gap: 8px; margin-bottom: 8px; align-items: center; }
+  @media (max-width: 520px) { .nl-row { grid-template-columns: 1fr 1fr auto; } }
+
+  /* genre chips */
+  .chip-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip-check { display: inline-flex; align-items: center; gap: 7px; border: 1px solid var(--line); border-radius: 999px; padding: 8px 14px; font-size: 13px; cursor: pointer; user-select: none; }
+  .chip-check input { accent-color: var(--gold); }
+
+  /* add-ons */
+  .addon-row { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; margin-bottom: 8px; cursor: pointer; }
+  .addon-row input { accent-color: var(--gold); flex-shrink: 0; }
+  .addon-name { flex: 1; font-size: 14px; }
+  .addon-name em { color: var(--ink-3); font-size: 12px; }
+  .addon-price { color: var(--gold); font-weight: 600; font-size: 14px; }
+  .addon-total { margin-top: 12px; padding: 12px 14px; background: rgba(201,169,106,.08); border: 1px solid var(--gold); border-radius: 12px; font-size: 13px; color: var(--ink-2); }
+  .addon-total:empty { display: none; }
+
+  .spin { display:inline-block; width:13px; height:13px; border:2px solid var(--ink-3); border-top-color: var(--gold); border-radius:50%; animation: sp .8s linear infinite; vertical-align:-2px; }
+  @keyframes sp { to { transform: rotate(360deg); } }
+
+  .save-bar { margin-top: 40px; padding: 8px 0 12px; }
+  .centered { text-align: center; padding-top: 6vh; }
+  .check { width: 60px; height: 60px; border-radius: 50%; border: 1px solid var(--gold); color: var(--gold); display: inline-flex; align-items: center; justify-content: center; font-size: 26px; margin-bottom: 20px; }
+  .link-box { display: flex; gap: 8px; margin-top: 8px; }
+  .link-box input { flex: 1; font-size: 13px; }
+</style>
+</head>
+<body>
+<div class="page">
+  <div id="demoBanner" class="banner" style="display:none">
+    Demo mode — saving to this device only. Finish Firebase setup (README) to go live.
+  </div>
+
+  <header class="intake-head">
+    <div class="wordmark" id="brandName" style="font-size:20px"></div>
+    <h1 class="display" style="font-size:clamp(30px,6vw,48px)">Let's plan your day</h1>
+    <p class="serif-italic muted" id="tagline" style="font-size:19px;margin-top:8px"></p>
+    <p class="subtle" style="font-size:13px;margin-top:14px;max-width:480px;margin-left:auto;margin-right:auto">
+      Fill in whatever you know so far — nothing is locked in, everything can be “TBD,” and you can come back to change it anytime before the big day.
+    </p>
+  </header>
+
+  <!-- RETURNING: wedding-date gate -->
+  <section id="view-gate" class="centered" style="display:none">
+    <div class="eyebrow">Welcome back</div>
+    <h2 class="display" style="font-size:30px;margin-top:10px">Is this you?</h2>
+    <p class="muted" style="margin-top:10px">Enter your wedding date to open your details.</p>
+    <div style="max-width:280px;margin:22px auto 0">
+      <input id="gateDate" type="date" class="input" aria-label="Wedding date" />
+      <div id="gateError" class="banner" style="display:none;margin-top:12px">That date doesn't match this link. Try again, or contact Rhys.</div>
+      <div style="margin-top:16px"><button id="gateBtn" class="btn" type="button">Open my details</button></div>
+    </div>
+  </section>
+
+  <!-- NOT FOUND -->
+  <section id="view-notFound" class="centered" style="display:none">
+    <h2 class="display" style="font-size:28px">Hmm — link not found</h2>
+    <p class="muted" style="margin-top:10px">This link doesn't match a saved form. Double-check it, or reach out to Rhys for a fresh one.</p>
+  </section>
+
+  <!-- THE FORM -->
+  <section id="view-form" style="display:none">
+    <div id="formFlash" class="banner" style="display:none"></div>
+    <div class="eyebrow" id="formTitle"></div>
+    <div id="formSections"></div>
+    <div class="save-bar"><button id="saveBtn" class="btn" type="button">Save my details</button></div>
+    <p class="subtle" style="text-align:center;font-size:12px;margin-top:6px">You'll get a private link to come back and edit anytime.</p>
+  </section>
+
+  <!-- SAVED -->
+  <section id="view-saved" class="centered" style="display:none">
+    <div class="check">✓</div>
+    <h2 class="display" style="font-size:34px">Saved!</h2>
+    <p class="muted" style="margin-top:10px;max-width:430px;margin-left:auto;margin-right:auto">
+      Here's your private link. <strong>Bookmark it</strong> — it's how you come back to review or change anything. I'll ask for your wedding date to confirm it's you.
+    </p>
+    <p class="muted" id="savedEmailNote" style="display:none;margin-top:8px;font-size:13px;color:var(--gold)"></p>
+    <div class="card" style="margin-top:22px;text-align:left">
+      <label class="field-label">Your private link</label>
+      <div class="link-box"><input id="savedLink" class="input" readonly><button id="copyLink" class="btn small" type="button" style="width:auto;padding:10px 18px;font-size:12px">Copy link</button></div>
+    </div>
+    <div style="margin-top:22px"><button id="backToEdit" class="btn ghost" type="button">Back to my details</button></div>
+    <p class="subtle" style="font-size:12px;margin-top:24px">Lost your link? No worries — Rhys can pull it up and resend it.</p>
+  </section>
+
+  <footer style="text-align:center;margin-top:48px;padding-bottom:20px">
+    <div class="subtle" id="brandFoot" style="font-size:12px;letter-spacing:.28em;text-transform:uppercase"></div>
+  </footer>
+</div>
+
+<script type="module" src="intake.js?v=4"></script>
+</body>
+</html>
