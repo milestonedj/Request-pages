@@ -4,7 +4,7 @@ Song requests, tips, printable signs and the pre-consult intake form for Milesto
 
 | File | Who sees it | What it does |
 |---|---|---|
-| `dashboard.html` | Owner (Google sign-in) | Live requests, history by night, insights, CSV export, Couples tab |
+| `dashboard.html` | Owner | Live requests, history by night, insights, CSV export, Couples tab |
 | `request.html` | Guests (via QR) | Search a song and send the request |
 | `print.html` | Guests (printed) | Vertical sign: letter, 8x10, 5x7 or 4x6; requests + tips, requests only, or tips only |
 | `display-milestone.html` | Guests (on a screen) | Branded landscape display with request and tip QRs |
@@ -24,10 +24,7 @@ Requests are stored under their event night (6am to 6am, so a 12:30am request be
 ## Firebase setup
 
 1. Realtime Database: create it in locked mode, then paste the rules you were given into the Rules tab and publish.
-2. Authentication: Sign-in method, enable Google. Settings, Authorized domains, add `milestonedj.github.io`.
-3. Project settings, Your apps: copy the web config into `config.js`.
-
-Guests can only add requests. Reading requests and the Couples list needs the owner's Google sign-in.
+2. Project settings, Your apps: copy the web config into `config.js`.
 
 ## Email confirmations (optional)
 

@@ -183,9 +183,9 @@
   const tonight = nightKey();
   $("nightTitle").textContent = prettyDate(tonight);
 
-  const mode = await initStore({ auth: true });
+  const mode = await initStore();
   const user = await requireSignIn($("signin"));
-  if (user) { $("whoami").textContent = user.email + " · sign out"; $("whoami").onclick = () => signOutOwner().then(() => location.reload()); }
+  if (user) { $("whoami").textContent = user.email + " · sign out"; $("whoami").onclick = () => signOutOwner().then(() => location.reload()); } else $("whoami").style.display = "none";
   const denied = (e) => { $("deniedBanner").style.display = "block"; console.error(e); };
   if (mode !== "firebase") {
     $("demoBanner").style.display = "block";
