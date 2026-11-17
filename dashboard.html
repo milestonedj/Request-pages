@@ -458,7 +458,7 @@
   function downloadConsultSheet(r) {
     if (!r) return;
     const lines = [];
-    lines.push(["MILESTONE — PRE-CONSULT SHEET"].map(csvQ).join(","));
+    lines.push(["PRE-CONSULT SHEET"].map(csvQ).join(","));
     lines.push([coupleNames(r), prettyWedding(r.weddingDate)].map(csvQ).join(","));
     lines.push("");
     lines.push(["Section", "Item", "Details"].map(csvQ).join(","));

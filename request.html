@@ -130,7 +130,6 @@
   const params = new URLSearchParams(location.search);
   const venue = (params.get("v") || "event").slice(0, 40);
 
-  $("brandFoot").textContent = BUSINESS.name + " — " + BUSINESS.website;
   $("tipLine").textContent = SETTINGS.tipLine;
   $("venmoLink").href = "https://venmo.com/u/" + SETTINGS.venmoHandle;
 

@@ -71,7 +71,7 @@
   const show = ["requests", "tips"].includes(q.get("show")) ? q.get("show") : "both";
   const tag = (q.get("v") || "sign").replace(/[^\w-]/g, "").slice(0, 30);
   const base = q.get("base") || location.href;   // ?base= lets you print before the site is live
-  const brand = { name: BUSINESS.name, tagline: BUSINESS.tagline, foot: BUSINESS.website + "  ·  " + BUSINESS.instagram };
+  const brand = { name: "", tagline: "", foot: "" };
   if (q.get("light") === "1") document.documentElement.classList.add("light");
   if (show === "tips") document.body.classList.add("tips-only");
 

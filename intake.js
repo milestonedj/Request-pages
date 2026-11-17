@@ -314,9 +314,6 @@ function collect(shallow = false) {
 let currentToken = null;
 
 async function init() {
-  $("brandName").textContent = BUSINESS.name;
-  $("tagline").textContent = BUSINESS.tagline;
-  $("brandFoot").textContent = BUSINESS.name + " — " + BUSINESS.website;
   const mode = await initStore();
   if (mode !== "firebase") $("demoBanner").style.display = "block";
 

@@ -1,13 +1,13 @@
-# Milestone Event Pages
+# Event Pages
 
-Song requests, tips, printable signs and the pre-consult intake form for Milestone events. Static site on GitHub Pages, data in Firebase.
+Song requests, tips, printable signs and the pre-consult intake form. Static site on GitHub Pages, data in Firebase.
 
 | File | Who sees it | What it does |
 |---|---|---|
 | `dashboard.html` | Owner | Live requests, history by night, insights, CSV export, Couples tab |
 | `request.html` | Guests (via QR) | Search a song and send the request |
 | `print.html` | Guests (printed) | Vertical sign: letter, 8x10, 5x7 or 4x6; requests + tips, requests only, or tips only |
-| `display-milestone.html` | Guests (on a screen) | Branded landscape display with request and tip QRs |
+| `display-milestone.html` | Guests (on a screen) | Landscape business-card display with request and tip QRs |
 | `intake.html` | Booked couples | Pre-consult form with a private link to edit any time |
 | `index.html` | Owner | Links to everything |
 | `config.js` | — | Firebase, EmailJS, Venmo and business details |
